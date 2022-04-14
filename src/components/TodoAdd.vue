@@ -49,7 +49,7 @@ export default {
       this.toUpdate ? this.$emit('updateTodo', {...this.form}) : this.$emit('addTodo', {...this.form})
       Object.assign(this.$data, this.$options.data())
     }
-  }
+  },
 }
 </script>
 
