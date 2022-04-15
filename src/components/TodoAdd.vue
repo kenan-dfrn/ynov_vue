@@ -6,11 +6,12 @@
     </select>
     <input v-model="form.title" type="text">
     <input v-model="form.time" type="number">
-    <button @click="addToTodo">{{ toUpdate ? 'update' : 'add'}}</button>
+    <button @click="addToTodo">{{ getUpdateItem ? 'update' : 'add'}}</button>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
@@ -23,13 +24,9 @@ export default {
       ownerList: [ 'kenan', 'julien', 'marine' ]
     }
   },
-  props: {
-    toUpdate: { type: Object, default: () => null}
-  },
-  updated () {
-    if (this.toUpdate) {
-      this.form = this.toUpdate
-    }
+
+  computed: {
+    ...mapGetters(['getUpdateItem']),
   },
   methods: {
     addToTodo() {
@@ -46,7 +43,10 @@ export default {
         return
       }
 
-      this.toUpdate ? this.$emit('updateTodo', {...this.form}) : this.$emit('addTodo', {...this.form})
+      let action = {}
+      this.getUpdateItem ? action = { name: 'update', pos: null } :  action = { name: 'add', pos: null }
+
+      this.$store.dispatch('updateTodoList', { action, item: {...this.form}} )
       Object.assign(this.$data, this.$options.data())
     }
   },

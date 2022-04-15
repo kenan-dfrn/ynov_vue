@@ -7,7 +7,7 @@
       <th>Heures</th>
       <th>utilitaires</th>
     </tr>
-    <tr v-for="(todo, index) in list" :key="`todo-${index}`" @click="select(index)">
+    <tr v-for="(todo, index) in todoList" :key="`todo-${index}`" @click="select(index)">
       <td v-for="(item, index) in todo" :key="`todo-${index}`">{{item}}</td>
       <td>
         <span @click="updateTodo(index)">modif</span>
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   props: {
     list: { type: Array, default: () => []}
@@ -32,12 +34,16 @@ export default {
       selectedTodo: []
     }
   },
+  computed: {
+    ...mapGetters(['todoList'])
+  },
   methods: {
     updateTodo (index) {
-      this.$emit('updateTodo', index)
+      this.$store.dispatch('updateTodoItem', index)
     },
     removeTodo (index) {
-      this.$emit('removeTodo', index)
+      const action = { name: 'remove', pos: index}
+      this.$store.dispatch('updateTodoList', { action, item: {}})
     },
     select (index) {
       if (this.selectedTodo.includes(index)) {
